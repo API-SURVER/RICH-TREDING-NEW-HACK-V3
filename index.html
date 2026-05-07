@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>RICH TREDING</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500&display=swap');
+
+        :root { --dj-cyan: #00f3ff; --dj-pink: #ff00ff; --glass: rgba(5, 5, 10, 0.95); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: 'Share Tech Mono', monospace; overflow: hidden; }
+        
+        #game-frame, .panel-wrapper, #control-btn { display: none; }
+
+        .panel-wrapper { position: fixed; z-index: 9999; touch-action: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .hide-mode { transform: scale(0); opacity: 0; pointer-events: none; }
+
+        .glass-panel { background: var(--glass); border: 2px solid var(--dj-cyan); border-radius: 15px; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); padding: 10px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        
+        #timer-panel { top: 5%; left: 50%; transform: translateX(-50%); width: 120px; }
+        #signal-panel { top: 20%; left: 5%; width: 140px; }
+        #color-panel { top: 20%; right: 5%; width: 140px; }
+        #number-panel { top: 55%; left: 50%; transform: translateX(-50%); width: 130px; }
+
+        .profile-mini { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--dj-cyan); margin-bottom: 5px; object-fit: cover; }
+        .label { font-size: 9px; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; }
+        .val { font-size: 20px; font-weight: 900; font-family: 'Orbitron'; text-shadow: 0 0 5px currentColor; }
+        
+        .panel-btn { width: 90%; padding: 6px; margin-top: 8px; border-radius: 5px; font-size: 8px; text-decoration: none; font-weight: bold; color: #000; font-family: 'Orbitron'; text-align: center; display: block; }
+        .tg-btn { background: var(--dj-cyan); }
+        .ct-btn { background: var(--dj-pink); }
+
+        #control-btn { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; background: #111; border: 2px solid var(--dj-pink); border-radius: 50%; z-index: 10001; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px var(--dj-pink); display: none; }
+
+        /* Screens */
+        #login-screen, #choice-screen { position: fixed; inset: 0; background: #000; z-index: 10002; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        #choice-screen { display: none; padding: 20px; text-align: center; }
+        
+        .login-box { width: 280px; padding: 30px; border: 2px solid var(--dj-cyan); border-radius: 20px; text-align: center; background: #05050a; }
+        .login-input { width: 90%; background: transparent; border: none; border-bottom: 2px solid var(--dj-pink); color: #fff; margin: 20px 0; outline: none; text-align: center; font-size: 18px; }
+        
+        .big-btn { width: 250px; padding: 15px; border-radius: 10px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border: none; font-size: 14px; margin: 10px 0; }
+        .reg-btn { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
+        .log-btn { background: var(--dj-cyan); color: #000; box-shadow: 0 0 15px var(--dj-cyan); }
+        .az-btn { background: transparent; border: 1px solid var(--dj-pink); color: var(--dj-pink); font-size: 12px; transition: 0.3s; }
+        .az-btn:active { background: var(--dj-pink); color: #000; }
+
+        .instruction { color: #fff; font-family: 'Hind Siliguri', sans-serif; font-size: 13px; line-height: 1.6; margin: 15px 0; max-width: 300px; }
+    </style>
+</head>
+<body>
+
+    <iframe id="game-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+
+    <!-- Essential Hack Panels -->
+    <div class="panel-wrapper" id="timer-panel"><div class="glass-panel"><div class="label">OFFICIAL TIME</div><div class="val" id="time-val" style="color:#fff">00S</div></div></div>
+    
+    <div class="panel-wrapper" id="signal-panel"><div class="glass-panel" style="border-color: var(--dj-pink);"><img src="https://iili.io/BtdrB0G.md.jpg" class="profile-mini"><div class="label" style="color:var(--dj-cyan)">RICH TREDING</div><div class="label">SIGNAL</div><div class="val" id="sig-val" style="color:var(--dj-cyan)">WAIT</div><a href="https://t.me/Raja_boss001" class="panel-btn tg-btn">TELEGRAM</a></div></div>
+    
+    <div class="panel-wrapper" id="color-panel"><div class="glass-panel"><div class="label">COLOR</div><div class="val" id="col-val" style="color:#ff3333">WAIT</div><a href="https://t.me/Raja_boss001" class="panel-btn ct-btn">CONTACT</a></div></div>
+    
+    <div class="panel-wrapper" id="number-panel"><div class="glass-panel" style="border-color: #ffaa00;"><div class="label">PREDICT NUMBER</div><div class="val" id="num-val" style="color:#ffaa00">--</div></div></div>
+
+    <div id="control-btn" onclick="togglePanels()">HIDE</div>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h3 style="color:white; font-family:Orbitron; font-size:12px;">RICH TREDING</h3>
+            <input type="password" id="key" class="login-input" placeholder="ACCESS KEY">
+            <button onclick="checkPass()" style="width:100%; padding:10px; border-radius:20px; background:var(--dj-cyan); border:none; font-weight:bold; cursor:pointer; font-family:Orbitron;">ACTIVATE</button>
+        </div>
+    </div>
+
+    <!-- Choice Interface -->
+    <div id="choice-screen">
+        <button class="big-btn reg-btn" onclick="activateHack('reg')">REGISTRATION LINK</button>
+        <button class="big-btn log-btn" onclick="activateHack('log')">LOGIN LINK</button>
+        
+        <div class="instruction">
+            দয়া করে আগে রেজিস্ট্রেশন করুন তার পরে লগইন করুন হ্যাক এক্টিভ করার জন্য রেজিস্ট্রেশন করা বাধ্যতামূলক অবশ্যই ভালো মতো রেজিস্ট্রেশন করে ডিপি করুন
+        </div>
+
+        <button class="big-btn az-btn" onclick="location.href='https://t.me/Neonix_hacker_xx'">HACK CREATE BY AZ HACKER</button>
+    </div>
+
+    <script>
+        const PASS = "xani123";
+        let isHidden = false;
+
+        function checkPass() {
+            if(document.getElementById('key').value === PASS) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('choice-screen').style.display = 'flex';
+            } else { alert("Wrong Key!"); }
+        }
+
+        function activateHack(type) {
+            const frame = document.getElementById('game-frame');
+            if(type === 'reg') {
+                frame.src = "https://11bdwin24.com/register?inviteCode=3HGPPTN&from=web";
+            } else {
+                frame.src = "https://11bdwin24.com/register?inviteCode=3HGPPTN&from=web";
+            }
+            
+            document.getElementById('choice-screen').style.display = 'none';
+            frame.style.display = 'block';
+            document.querySelectorAll('.panel-wrapper').forEach(p => p.style.display = 'block');
+            document.getElementById('control-btn').style.display = 'flex';
+            
+            startEngine();
+        }
+
+        function togglePanels() {
+            const panels = document.querySelectorAll('.panel-wrapper');
+            isHidden = !isHidden;
+            panels.forEach(p => isHidden ? p.classList.add('hide-mode') : p.classList.remove('hide-mode'));
+            document.getElementById('control-btn').innerText = isHidden ? "SHOW" : "HIDE";
+        }
+
+        function startEngine() {
+            const signals = ["BIG", "SMALL"];
+            const colors = ["RED", "GREEN"];
+            
+            setInterval(() => {
+                const now = new Date();
+                const rem = 30 - (now.getSeconds() % 30);
+                document.getElementById("time-val").innerText = rem.toString().padStart(2, '0') + "S";
+                
+                if(rem === 30 || document.getElementById("sig-val").innerText === "WAIT") {
+                    const s = signals[Math.floor(Math.random() * signals.length)];
+                    const c = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const sv = document.getElementById("sig-val");
+                    const cv = document.getElementById("col-val");
+                    const nv = document.getElementById("num-val");
+
+                    sv.innerText = s;
+                    sv.style.color = s === "BIG" ? "var(--dj-cyan)" : "var(--dj-pink)";
+                    cv.innerText = c;
+                    cv.style.color = c === "RED" ? "#ff3333" : "#33ff33";
+
+                    if(s === "BIG" && c === "GREEN") nv.innerText = "7, 9";
+                    else if(s === "BIG" && c === "RED") nv.innerText = "6, 8";
+                    else if(s === "SMALL" && c === "GREEN") nv.innerText = "1, 3";
+                    else if(s === "SMALL" && c === "RED") nv.innerText = "2, 4";
+                }
+            }, 1000);
+        }
+
+        // Draggable Panel Logic
+        document.querySelectorAll('.panel-wrapper').forEach(panel => {
+            let drag = false, ox, oy;
+            panel.addEventListener('touchstart', (e) => {
+                if(e.target.tagName !== 'A') {
+                    drag = true;
+                    ox = e.touches[0].clientX - panel.offsetLeft;
+                    oy = e.touches[0].clientY - panel.offsetTop;
+                }
+            });
+            document.addEventListener('touchmove', (e) => {
+                if(!drag) return;
+                panel.style.left = (e.touches[0].clientX - ox) + "px";
+                panel.style.top = (e.touches[0].clientY - oy) + "px";
+                panel.style.transform = "none";
+            });
+            document.addEventListener('touchend', () => drag = false);
+        });
+    </script>
+</body>
+</html>
